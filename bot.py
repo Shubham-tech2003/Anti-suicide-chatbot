@@ -10,6 +10,8 @@ from tensorflow.python.framework import ops
 stemmer = LancasterStemmer()
 import json
 
+
+
 words = []
 labels = []
 docs_x = []
@@ -19,10 +21,10 @@ with open("intents.json") as file:
 
 for intent in data["intents"]:
     for pattern in intent["patterns"]:
-            wrds = nltk.word_tokenize(pattern)
-            words.extend(wrds)
-            docs_x.append(wrds)
-            docs_y.append(intent["tag"])
+        wrds = nltk.word_tokenize(pattern)
+        words.extend(wrds)
+        docs_x.append(wrds)
+        docs_y.append(intent["tag"])
     if intent["tag"] not in labels:
         labels.append(intent["tag"])
 words = [stemmer.stem(w.lower()) for w in words if w != "?" or w != "!"]
@@ -84,7 +86,7 @@ def bag_of_words(s, words):
     return numpy.array(bag)
 def chat():
     print("Start talking with the bot!")
-
+    last_response = ""
     while True:
         inp = input("Tell me what is on your heart: ")
         if inp.lower() == "quit":
@@ -96,7 +98,13 @@ def chat():
             for tg in data["intents"]:
                 if tg['tag'] == tag:
                     responses = tg["responses"]
-                    print(random.choice(responses))
+                    reply = random.choice(responses)
+                    if reply != last_response:
+                        print(reply)
+                        last_response = reply
+                    else:
+                        print(random.choice(responses))
+
         else:
             print("I don't understand. Try Again !")
 chat()
